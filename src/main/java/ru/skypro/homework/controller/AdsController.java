@@ -62,7 +62,7 @@ public class AdsController {
     }
 
     @PatchMapping("{ad_pk}/comments/{id}")
-    public ResponseEntity<Comment> updateComments(@PathVariable Integer id, String ad_pk, @RequestBody Comment comment) {
+    public ResponseEntity<Comment> updateComments(@PathVariable Integer id, @PathVariable String ad_pk, @RequestBody Comment comment) {
         Comment updateComments = adsService.updateComments(id, ad_pk, comment);
         return new ResponseEntity<>(updateComments, HttpStatus.OK);
     }
