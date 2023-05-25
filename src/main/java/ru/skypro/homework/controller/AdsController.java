@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdsService;
-
+@CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("ads")
