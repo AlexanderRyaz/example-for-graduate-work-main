@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdsService;
 
@@ -42,17 +43,23 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public void deleteComments(Integer id, String ad_pk) {
+    public void deleteComments(Integer adId, Integer commentId) {
 
     }
 
     @Override
-    public Comment updateComments(Integer id, String ad_pk, Comment comment) {
+    public Comment updateComments(Integer adId, Integer commentId, Comment comment) {
         return null;
     }
 
     @Override
-    public ResponseWrapperAds getAdsMe(Boolean authenticated, String authority, Object credentials, Object details, Object principal) {
+    public ResponseWrapperAds getAdsMe() {
         return null;
     }
+
+    @Override
+    public void updateAdsImage(MultipartFile image) {
+
+    }
+
 }

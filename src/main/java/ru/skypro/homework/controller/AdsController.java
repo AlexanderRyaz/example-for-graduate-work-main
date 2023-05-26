@@ -2,10 +2,13 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdsService;
+
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
@@ -19,15 +22,15 @@ public class AdsController {
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
-    @GetMapping("{ad_pk}/comments")
-    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable String ad_pk) {
-        ResponseWrapperComment comments = adsService.getComments(ad_pk);
+    @GetMapping("{id}/comments")
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable String id) {
+        ResponseWrapperComment comments = adsService.getComments(id);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @PostMapping("{ad_pk}/comments")
-    public ResponseEntity<Comment> addComments(@PathVariable String ad_pk, @RequestBody Comment comment) {
-        Comment cmt = adsService.addComments(ad_pk, comment);
+    @PostMapping("{id}/comments")
+    public ResponseEntity<Comment> addComments(@PathVariable String id, @RequestBody Comment comment) {
+        Comment cmt = adsService.addComments(id, comment);
         return new ResponseEntity<>(cmt, HttpStatus.OK);
     }
 
@@ -55,25 +58,27 @@ public class AdsController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @DeleteMapping("{ad_pk}/comments/{id}")
+    @DeleteMapping("{adId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteComments(@PathVariable Integer id, @PathVariable String ad_pk) {
-        adsService.deleteComments(id, ad_pk);
+    public void deleteComments(@PathVariable Integer adId, @PathVariable Integer commentId) {
+        adsService.deleteComments(adId, commentId);
     }
 
-    @PatchMapping("{ad_pk}/comments/{id}")
-    public ResponseEntity<Comment> updateComments(@PathVariable Integer id, @PathVariable String ad_pk, @RequestBody Comment comment) {
-        Comment updateComments = adsService.updateComments(id, ad_pk, comment);
+    @PatchMapping("{adId}/comments/{commentId}")
+    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId , @PathVariable Integer commentId, @RequestBody Comment comment) {
+        Comment updateComments = adsService.updateComments(adId, commentId , comment);
         return new ResponseEntity<>(updateComments, HttpStatus.OK);
     }
 
     @GetMapping("me")
-    public ResponseEntity<ResponseWrapperAds> getAdsMe(@RequestParam(value = "authenticated", required = false) Boolean authenticated,
-                                                       @RequestParam(value = "authorities[0].authority", required = false) String authority,
-                                                       @RequestParam(value = "credentials", required = false) Object credentials,
-                                                       @RequestParam(value = "details", required = false) Object details,
-                                                       @RequestParam(value = "principal", required = false) Object principal) {
-        ResponseWrapperAds ads = adsService.getAdsMe(authenticated, authority, credentials, details, principal);
+    public ResponseEntity<ResponseWrapperAds> getAdsMe() {
+        ResponseWrapperAds ads = adsService.getAdsMe();
         return new ResponseEntity<>(ads, HttpStatus.OK);
+    }
+
+    @PatchMapping(value = "{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateAdsImage(@PathVariable Integer id, @RequestParam MultipartFile image) {
+        adsService.updateAdsImage(image);
+        return ResponseEntity.ok().build();
     }
 }

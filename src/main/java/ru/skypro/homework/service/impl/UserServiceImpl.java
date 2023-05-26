@@ -9,8 +9,8 @@ import ru.skypro.homework.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
     @Override
-    public NewPassword setPassword(NewPassword newPassword) {
-        return null;
+    public void setPassword(NewPassword newPassword) {
+
     }
 
     @Override
