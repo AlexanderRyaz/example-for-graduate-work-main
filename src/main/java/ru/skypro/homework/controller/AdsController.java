@@ -21,6 +21,11 @@ public class AdsController {
         ResponseWrapperAds ads = adsService.getAds();
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
+    @PostMapping()
+    public ResponseEntity<Ads> addAds(@RequestBody Object o, @RequestBody String image) {
+        Ads ads = adsService.addAds(o, image);
+        return new ResponseEntity<>(ads, HttpStatus.OK);
+    }
 
     @GetMapping("{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable String id) {
@@ -78,7 +83,7 @@ public class AdsController {
 
     @PatchMapping(value = "{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateAdsImage(@PathVariable Integer id, @RequestParam MultipartFile image) {
-        adsService.updateAdsImage(image);
+        adsService.updateAdsImage(image, id);
         return ResponseEntity.ok().build();
     }
 }

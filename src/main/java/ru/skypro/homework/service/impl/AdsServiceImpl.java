@@ -58,8 +58,13 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public void updateAdsImage(MultipartFile image) {
+    public void updateAdsImage(MultipartFile image, Integer id) {
 
+    }
+
+    @Override
+    public Ads addAds(Object o, String image) {
+        return null;
     }
 
 }

@@ -9,7 +9,5 @@ private String firstName;
 private Integer id;
 private String lastName;
 private String phone;
-private String regDate;
-private String city;
 private String image;
 }

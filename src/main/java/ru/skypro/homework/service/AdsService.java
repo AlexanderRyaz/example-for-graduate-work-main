@@ -26,5 +26,7 @@ public interface AdsService {
 
     ResponseWrapperAds getAdsMe();
 
-    void updateAdsImage(MultipartFile image);
+    void updateAdsImage(MultipartFile image, Integer id);
+
+    Ads addAds(Object o, String image);
 }
