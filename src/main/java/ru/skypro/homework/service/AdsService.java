@@ -28,5 +28,5 @@ public interface AdsService {
 
     void updateAdsImage(MultipartFile image, Integer id);
 
-    Ads addAds(Object o, String image);
+    Ads addAds(Object o, MultipartFile image);
 }
