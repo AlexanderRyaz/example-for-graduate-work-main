@@ -1,12 +1,19 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.repository.AdsRepository;
+import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
 
 @Service
+@RequiredArgsConstructor
 public class AdsServiceImpl implements AdsService {
+    private final AdsRepository adsRepository;
+    private final CommentRepository commentRepository;
+
     @Override
     public ResponseWrapperAds getAds() {
         return null;
