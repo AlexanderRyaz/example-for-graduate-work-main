@@ -11,8 +11,11 @@ public class AdsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
-    private Integer author;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private UserEntity  author;
     private String image;
     private Integer price;
     private String title;
+    private String description;
 }

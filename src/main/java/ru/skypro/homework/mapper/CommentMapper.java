@@ -5,9 +5,13 @@ import org.mapstruct.Mapping;
 import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.entity.CommentEntity;
 
-@Mapper
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface CommentMapper {
-    Comment toEntity(CommentEntity entity);
+    @Mapping(target = "author", source = "author.id")
+    @Mapping(target = "authorFirstName", source = "author.firstName")
+    @Mapping(target = "authorImage", source = "author.image")
+    Comment toDto(CommentEntity entity);
 
-    CommentEntity toDto(Comment dto);
+    @Mapping(target = "author", ignore = true)
+    CommentEntity toEntity(Comment dto);
 }

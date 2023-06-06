@@ -34,7 +34,7 @@ public class AdsController {
     }
 
     @PostMapping("{id}/comments")
-    public ResponseEntity<Comment> addComments(@PathVariable String id, @RequestBody Comment comment) {
+    public ResponseEntity<Comment> addComments(@PathVariable Integer id, @RequestBody Comment comment) {
         Comment cmt = adsService.addComments(id, comment);
         return new ResponseEntity<>(cmt, HttpStatus.OK);
     }

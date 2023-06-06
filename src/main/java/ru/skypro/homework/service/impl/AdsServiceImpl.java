@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.entity.AdsEntity;
+import ru.skypro.homework.entity.CommentEntity;
+import ru.skypro.homework.exception.NotFoundException;
+import ru.skypro.homework.mapper.AdsMapper;
+import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
@@ -13,6 +18,8 @@ import ru.skypro.homework.service.AdsService;
 public class AdsServiceImpl implements AdsService {
     private final AdsRepository adsRepository;
     private final CommentRepository commentRepository;
+    private final AdsMapper adsMapper;
+    private final CommentMapper commentMapper;
 
     @Override
     public ResponseWrapperAds getAds() {
@@ -25,8 +32,13 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Comment addComments(String ad_pk, Comment comment) {
-        return null;
+    public Comment addComments(Integer ad_pk, Comment comment) {
+        AdsEntity adsEntity = adsRepository.findById(ad_pk)
+                .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        CommentEntity commentEntity = commentMapper.toEntity(comment);
+        commentEntity.setAds(adsEntity);
+        CommentEntity saveComment = commentRepository.save(commentEntity);
+        return commentMapper.toDto(saveComment);
     }
 
     @Override
@@ -71,7 +83,10 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public Ads addAds(CreateAds properties, MultipartFile image) {
-        return null;
+        AdsEntity entity = adsMapper.createAdsToEntity(properties);
+        entity.setImage(image.getOriginalFilename());
+        AdsEntity saveEntity = adsRepository.save(entity);
+        return adsMapper.toDto(saveEntity);
     }
 
 }

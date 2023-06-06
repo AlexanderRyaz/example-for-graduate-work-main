@@ -10,7 +10,7 @@ public interface AdsService {
 
     ResponseWrapperComment getComments(String ad_pk);
 
-    Comment addComments(String ad_pk, Comment comment);
+    Comment addComments(Integer ad_pk, Comment comment);
 
     FullAds getFullAd(Integer id);
 

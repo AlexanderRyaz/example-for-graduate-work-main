@@ -1,6 +1,5 @@
 package ru.skypro.homework.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jdk.jfr.Timestamp;
 import lombok.Data;
 
@@ -9,16 +8,18 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name="comments")
+@Table(name = "comments")
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
-    private Integer author;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private UserEntity author;
     @Timestamp
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
-    private String authorImage;
-    private String authorFirstName;
     private String text;
+    @ManyToOne
+    @JoinColumn(name = "ads_id")
+    private AdsEntity ads;
 }

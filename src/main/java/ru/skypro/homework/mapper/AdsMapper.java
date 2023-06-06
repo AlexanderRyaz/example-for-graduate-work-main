@@ -1,12 +1,17 @@
 package ru.skypro.homework.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.skypro.homework.dto.Ads;
+import ru.skypro.homework.dto.CreateAds;
 import ru.skypro.homework.entity.AdsEntity;
 
-@Mapper
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface AdsMapper {
-    Ads toEntity(AdsEntity entity);
+    @Mapping(target = "author", source = "author.id")
+    Ads toDto(AdsEntity entity);
+    @Mapping(target = "author", ignore = true)
+    AdsEntity toEntity(Ads dto);
 
-    AdsEntity toDto(Ads dto);
+    AdsEntity createAdsToEntity(CreateAds createAds);
 }
