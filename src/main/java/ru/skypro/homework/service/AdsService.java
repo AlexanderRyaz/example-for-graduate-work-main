@@ -8,17 +8,17 @@ import ru.skypro.homework.dto.*;
 public interface AdsService {
     ResponseWrapperAds getAds();
 
-    ResponseWrapperComment getComments(String ad_pk);
+    ResponseWrapperComment getComments(Integer adPk);
 
-    Comment addComments(Integer ad_pk, Comment comment);
+    Comment addComments(Integer adPk, Comment comment);
 
     FullAds getFullAd(Integer id);
 
     void removeAds(Integer id);
 
-    CreateAds updateAds(Integer id, CreateAds createAds);
+    Ads updateAds(Integer id, CreateAds createAds);
 
-    Comment getComments(Integer id, String ad_pk);
+    Comment getComments(Integer id, String adPk);
 
     void deleteComments(Integer adId, Integer commentId);
 

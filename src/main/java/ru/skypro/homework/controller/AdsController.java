@@ -21,6 +21,7 @@ public class AdsController {
         ResponseWrapperAds ads = adsService.getAds();
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ads> addAds(@RequestParam("properties") CreateAds properties, @RequestParam MultipartFile image) {
         Ads ads = adsService.addAds(properties, image);
@@ -28,7 +29,7 @@ public class AdsController {
     }
 
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable String id) {
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
         ResponseWrapperComment comments = adsService.getComments(id);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
@@ -52,8 +53,8 @@ public class AdsController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<CreateAds> updateAds(@PathVariable Integer id, @RequestBody CreateAds createAds) {
-        CreateAds ads = adsService.updateAds(id, createAds);
+    public ResponseEntity<Ads> updateAds(@PathVariable Integer id, @RequestBody CreateAds createAds) {
+        Ads ads = adsService.updateAds(id, createAds);
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
@@ -70,8 +71,8 @@ public class AdsController {
     }
 
     @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId , @PathVariable Integer commentId, @RequestBody Comment comment) {
-        Comment updateComments = adsService.updateComments(adId, commentId , comment);
+    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId, @PathVariable Integer commentId, @RequestBody Comment comment) {
+        Comment updateComments = adsService.updateComments(adId, commentId, comment);
         return new ResponseEntity<>(updateComments, HttpStatus.OK);
     }
 

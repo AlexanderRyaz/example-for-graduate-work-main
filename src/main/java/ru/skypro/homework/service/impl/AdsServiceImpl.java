@@ -13,6 +13,9 @@ import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AdsServiceImpl implements AdsService {
@@ -23,17 +26,26 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public ResponseWrapperAds getAds() {
-        return null;
+
+        ResponseWrapperAds ads = new ResponseWrapperAds();
+        List<AdsEntity> all = adsRepository.findAll();
+        ads.setCount(all.size());
+        ads.setResults(all.stream().map(adsMapper::toDto).collect(Collectors.toList()));
+        return ads;
     }
 
     @Override
-    public ResponseWrapperComment getComments(String ad_pk) {
-        return null;
+    public ResponseWrapperComment getComments(Integer adPk) {
+        ResponseWrapperComment comment = new ResponseWrapperComment();
+        List<CommentEntity> all = commentRepository.findAllByAds_Pk(adPk);
+        comment.setCount(all.size());
+        comment.setResults(all.stream().map(commentMapper::toDto).collect(Collectors.toList()));
+        return comment;
     }
 
     @Override
-    public Comment addComments(Integer ad_pk, Comment comment) {
-        AdsEntity adsEntity = adsRepository.findById(ad_pk)
+    public Comment addComments(Integer adPk, Comment comment) {
+        AdsEntity adsEntity = adsRepository.findById(adPk)
                 .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
         CommentEntity commentEntity = commentMapper.toEntity(comment);
         commentEntity.setAds(adsEntity);
@@ -43,21 +55,33 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public FullAds getFullAd(Integer id) {
-        return null;
+        return adsRepository.findFullAdsById(id);
     }
 
     @Override
     public void removeAds(Integer id) {
+        adsRepository.deleteById(id);
 
     }
 
     @Override
-    public CreateAds updateAds(Integer id, CreateAds createAds) {
-        return null;
+    public Ads updateAds(Integer id, CreateAds createAds) {
+        AdsEntity entity = adsRepository.findById(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        if (createAds.getDescription() != null && !createAds.getDescription().isBlank()) {
+            entity.setDescription(createAds.getDescription());
+        }
+        if (createAds.getTitle() != null && !createAds.getTitle().isBlank()) {
+            entity.setTitle(createAds.getTitle());
+        }
+        if (createAds.getPrice() != null) {
+            entity.setPrice(createAds.getPrice());
+        }
+        AdsEntity updatedEntity = adsRepository.save(entity);
+        return adsMapper.toDto(updatedEntity);
     }
 
     @Override
-    public Comment getComments(Integer id, String ad_pk) {
+    public Comment getComments(Integer id, String adPk) {
         return null;
     }
 
