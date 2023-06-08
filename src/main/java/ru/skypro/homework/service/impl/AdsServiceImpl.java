@@ -81,19 +81,22 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Comment getComments(Integer id, String adPk) {
-        return null;
-    }
-
-    @Override
     public void deleteComments(Integer adId, Integer commentId) {
-
+        commentRepository.deleteByPkAndAds_Pk(commentId, adId);
     }
 
     @Override
     public Comment updateComments(Integer adId, Integer commentId, Comment comment) {
-        return null;
+
+        CommentEntity commentEntity = commentRepository.findByPkAndAds_Pk(commentId, adId).orElseThrow(() ->
+                new NotFoundException("Коментарий не найден"));
+        if (comment.getText() != null && !comment.getText().isBlank()) {
+            commentEntity.setText(comment.getText());
+        }
+        CommentEntity updateEntity = commentRepository.save(commentEntity);
+        return commentMapper.toDto(updateEntity);
     }
+
 
     @Override
     public ResponseWrapperAds getAdsMe() {

@@ -18,8 +18,6 @@ public interface AdsService {
 
     Ads updateAds(Integer id, CreateAds createAds);
 
-    Comment getComments(Integer id, String adPk);
-
     void deleteComments(Integer adId, Integer commentId);
 
     Comment updateComments(Integer adId, Integer commentId, Comment comment);

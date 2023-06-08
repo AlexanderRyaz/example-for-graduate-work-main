@@ -58,12 +58,6 @@ public class AdsController {
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
-    @GetMapping("{ad_pk}/comments/{id}")
-    public ResponseEntity<Comment> getComments(@PathVariable Integer id, @PathVariable String ad_pk) {
-        Comment comments = adsService.getComments(id, ad_pk);
-        return new ResponseEntity<>(comments, HttpStatus.OK);
-    }
-
     @DeleteMapping("{adId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteComments(@PathVariable Integer adId, @PathVariable Integer commentId) {

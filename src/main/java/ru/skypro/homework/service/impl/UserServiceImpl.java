@@ -29,11 +29,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User UpdateUserImage(User user) {
-        return null;
-    }
-
-    @Override
     public void updateUserImage(MultipartFile image) {
 
     }
