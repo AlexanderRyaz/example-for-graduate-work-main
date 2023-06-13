@@ -10,7 +10,5 @@ public interface UserService {
     void setPassword(NewPassword newPassword);
     User getUser();
     User updateUser(User user);
-    User UpdateUserImage(User user);
-
     void updateUserImage(MultipartFile image);
 }
