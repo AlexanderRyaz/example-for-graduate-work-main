@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS ads (
                                    image varchar,
                                    price Integer not null,
                                    author Integer,
+                                   created_at timestamp without time zone,
                                    CONSTRAINT fk_ads_users FOREIGN KEY (author) REFERENCES users (id)
 );
 CREATE TABLE IF NOT EXISTS comments (

@@ -25,12 +25,18 @@ public class AdsServiceImpl implements AdsService {
     private final CommentMapper commentMapper;
 
     @Override
-    public ResponseWrapperAds getAds() {
+    public ResponseWrapperAds getAds(String search) {
 
         ResponseWrapperAds ads = new ResponseWrapperAds();
-        List<AdsEntity> all = adsRepository.findAll();
-        ads.setCount(all.size());
-        ads.setResults(all.stream().map(adsMapper::toDto).collect(Collectors.toList()));
+        if (search != null && !search.isBlank()) {
+            List<AdsEntity> all = adsRepository.findAllByTitleContainsOrDescriptionContainsOrderByCreatedAtDesc(search, search);
+            ads.setCount(all.size());
+            ads.setResults(all.stream().map(adsMapper::toDto).collect(Collectors.toList()));
+        } else {
+            List<AdsEntity> all = adsRepository.findAll();
+            ads.setCount(all.size());
+            ads.setResults(all.stream().map(adsMapper::toDto).collect(Collectors.toList()));
+        }
         return ads;
     }
 

@@ -15,5 +15,5 @@ public interface AdsRepository extends JpaRepository<AdsEntity, Integer> {
             "a.author.lastName,a.description,a.author.email," +
             "a.image,a.author.phone,a.pk,a.price,a.title ) from AdsEntity as a join a.author where a.pk = : adsId")
     FullAds findFullAdsById(@Param("adsId") Integer adsId);
-
+    List<AdsEntity> findAllByTitleContainsOrDescriptionContainsOrderByCreatedAtDesc(String title, String description);
 }

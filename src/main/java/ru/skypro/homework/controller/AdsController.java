@@ -17,8 +17,8 @@ public class AdsController {
     private final AdsService adsService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapperAds> getAds() {
-        ResponseWrapperAds ads = adsService.getAds();
+    public ResponseEntity<ResponseWrapperAds> getAds(@RequestParam(value = "search", required = false) String search) {
+        ResponseWrapperAds ads = adsService.getAds(search);
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 

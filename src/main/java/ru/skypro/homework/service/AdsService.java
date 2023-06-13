@@ -6,7 +6,7 @@ import ru.skypro.homework.dto.*;
 
 @Service
 public interface AdsService {
-    ResponseWrapperAds getAds();
+    ResponseWrapperAds getAds(String search);
 
     ResponseWrapperComment getComments(Integer adPk);
 
