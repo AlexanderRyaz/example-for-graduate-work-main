@@ -1,21 +1,25 @@
 package ru.skypro.homework.entity;
 
+import jdk.jfr.Timestamp;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name="ads")
+@Table(name = "ads")
 public class AdsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private UserEntity  author;
+    private UserEntity author;
     private String image;
     private Integer price;
     private String title;
     private String description;
+    @Timestamp
+    private LocalDateTime createdAt;
 }
