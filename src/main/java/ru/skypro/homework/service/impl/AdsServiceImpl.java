@@ -6,11 +6,13 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdsEntity;
 import ru.skypro.homework.entity.CommentEntity;
+import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.NotFoundException;
 import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
+import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdsServiceImpl implements AdsService {
     private final AdsRepository adsRepository;
+    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final AdsMapper adsMapper;
     private final CommentMapper commentMapper;
@@ -41,32 +44,34 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public ResponseWrapperComment getComments(Integer adPk) {
+    public ResponseWrapperComment getComments(Integer adPk, String email) {
         ResponseWrapperComment comment = new ResponseWrapperComment();
-        List<CommentEntity> all = commentRepository.findAllByAds_Pk(adPk);
+        List<CommentEntity> all = commentRepository.findAllByAds_PkAndAds_Author_Email(adPk, email);
         comment.setCount(all.size());
         comment.setResults(all.stream().map(commentMapper::toDto).collect(Collectors.toList()));
         return comment;
     }
 
     @Override
-    public Comment addComments(Integer adPk, Comment comment) {
+    public Comment addComments(Integer adPk, Comment comment, String email) {
         AdsEntity adsEntity = adsRepository.findById(adPk)
                 .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         CommentEntity commentEntity = commentMapper.toEntity(comment);
         commentEntity.setAds(adsEntity);
+        commentEntity.setAuthor(user);
         CommentEntity saveComment = commentRepository.save(commentEntity);
         return commentMapper.toDto(saveComment);
     }
 
     @Override
-    public FullAds getFullAd(Integer id) {
-        return adsRepository.findFullAdsById(id);
+    public FullAds getFullAd(Integer id, String email) {
+        return adsRepository.findFullAdsByIdAndEmail(id, email);
     }
 
     @Override
-    public void removeAds(Integer id) {
-        adsRepository.deleteById(id);
+    public void removeAds(Integer id, String email) {
+        adsRepository.deleteByPkAndAuthor_Email(id, email);
 
     }
 

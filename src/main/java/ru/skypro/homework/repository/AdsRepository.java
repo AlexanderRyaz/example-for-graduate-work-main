@@ -13,7 +13,10 @@ import java.util.List;
 public interface AdsRepository extends JpaRepository<AdsEntity, Integer> {
     @Query("select new ru.skypro.homework.dto.FullAds(a.author.firstName," +
             "a.author.lastName,a.description,a.author.email," +
-            "a.image,a.author.phone,a.pk,a.price,a.title ) from AdsEntity as a join a.author where a.pk = : adsId")
-    FullAds findFullAdsById(@Param("adsId") Integer adsId);
+            "a.image,a.author.phone,a.pk,a.price,a.title ) from AdsEntity as a join a.author where a.pk = : adsId and a.author.email = : email")
+    FullAds findFullAdsByIdAndEmail(@Param("adsId") Integer adsId, @Param("email") String email);
+
     List<AdsEntity> findAllByTitleContainsOrDescriptionContainsOrderByCreatedAtDesc(String title, String description);
+
+    void deleteByPkAndAuthor_Email(Integer pk, String email);
 }

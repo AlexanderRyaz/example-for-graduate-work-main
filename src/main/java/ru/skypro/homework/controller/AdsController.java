@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -30,26 +32,34 @@ public class AdsController {
 
     @GetMapping("{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
-        ResponseWrapperComment comments = adsService.getComments(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        ResponseWrapperComment comments = adsService.getComments(id, email);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @PostMapping("{id}/comments")
     public ResponseEntity<Comment> addComments(@PathVariable Integer id, @RequestBody Comment comment) {
-        Comment cmt = adsService.addComments(id, comment);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Comment cmt = adsService.addComments(id, comment, email);
         return new ResponseEntity<>(cmt, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id) {
-        FullAds fullAd = adsService.getFullAd(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        FullAds fullAd = adsService.getFullAd(id, email);
         return new ResponseEntity<>(fullAd, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAds(@PathVariable Integer id) {
-        adsService.removeAds(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        adsService.removeAds(id, email);
     }
 
     @PatchMapping("{id}")

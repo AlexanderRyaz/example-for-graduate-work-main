@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
-    List<CommentEntity> findAllByAds_Pk(Integer adsPk);
+    List<CommentEntity> findAllByAds_PkAndAds_Author_Email(Integer adsPk, String email);
 
     void deleteByPkAndAds_Pk(Integer pK, Integer adsPk);
 
