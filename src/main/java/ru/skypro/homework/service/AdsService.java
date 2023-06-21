@@ -16,13 +16,13 @@ public interface AdsService {
 
     void removeAds(Integer id, String email);
 
-    Ads updateAds(Integer id, CreateAds createAds);
+    Ads updateAds(Integer id, CreateAds createAds, String email);
 
-    void deleteComments(Integer adId, Integer commentId);
+    void deleteComments(Integer adId, Integer commentId, String email);
 
-    Comment updateComments(Integer adId, Integer commentId, Comment comment);
+    Comment updateComments(Integer adId, Integer commentId, Comment comment, String email);
 
-    ResponseWrapperAds getAdsMe();
+    ResponseWrapperAds getAdsMe(String email);
 
     void updateAdsImage(MultipartFile image, Integer id);
 

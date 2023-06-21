@@ -13,5 +13,8 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
 
     void deleteByPkAndAds_Pk(Integer pK, Integer adsPk);
 
-    Optional<CommentEntity> findByPkAndAds_Pk(Integer pK, Integer adsPk);
+    Optional<CommentEntity> findByPkAndAds_PkAAndAuthor_Email(Integer pK, Integer adsPk, String email);
+
+    void deleteByPkAndAds_PkAndAuthor_Email(Integer pK, Integer adsPk, String email);
+
 }

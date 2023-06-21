@@ -8,6 +8,7 @@ import ru.skypro.homework.dto.FullAds;
 import ru.skypro.homework.entity.AdsEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AdsRepository extends JpaRepository<AdsEntity, Integer> {
@@ -19,4 +20,8 @@ public interface AdsRepository extends JpaRepository<AdsEntity, Integer> {
     List<AdsEntity> findAllByTitleContainsOrDescriptionContainsOrderByCreatedAtDesc(String title, String description);
 
     void deleteByPkAndAuthor_Email(Integer pk, String email);
+
+    Optional<AdsEntity> findByPkAndAuthor_Email(Integer pk, String email);
+
+    List<AdsEntity> findAllByAuthor_Email(String email);
 }

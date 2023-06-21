@@ -76,8 +76,9 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ads updateAds(Integer id, CreateAds createAds) {
-        AdsEntity entity = adsRepository.findById(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+    public Ads updateAds(Integer id, CreateAds createAds, String email) {
+        AdsEntity entity = adsRepository.findByPkAndAuthor_Email(id, email)
+                .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
         if (createAds.getDescription() != null && !createAds.getDescription().isBlank()) {
             entity.setDescription(createAds.getDescription());
         }
@@ -92,15 +93,16 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public void deleteComments(Integer adId, Integer commentId) {
-        commentRepository.deleteByPkAndAds_Pk(commentId, adId);
+    public void deleteComments(Integer adId, Integer commentId, String email) {
+        commentRepository.deleteByPkAndAds_PkAndAuthor_Email(commentId, adId, email);
     }
 
     @Override
-    public Comment updateComments(Integer adId, Integer commentId, Comment comment) {
+    public Comment updateComments(Integer adId, Integer commentId, Comment comment, String email) {
 
-        CommentEntity commentEntity = commentRepository.findByPkAndAds_Pk(commentId, adId).orElseThrow(() ->
-                new NotFoundException("Коментарий не найден"));
+        CommentEntity commentEntity = commentRepository.findByPkAndAds_PkAAndAuthor_Email(commentId, adId, email)
+                .orElseThrow(() ->
+                        new NotFoundException("Коментарий не найден"));
         if (comment.getText() != null && !comment.getText().isBlank()) {
             commentEntity.setText(comment.getText());
         }
@@ -110,8 +112,13 @@ public class AdsServiceImpl implements AdsService {
 
 
     @Override
-    public ResponseWrapperAds getAdsMe() {
-        return null;
+    public ResponseWrapperAds getAdsMe(String email) {
+        ResponseWrapperAds ads = new ResponseWrapperAds();
+        List<AdsEntity> all = adsRepository.findAllByAuthor_Email(email);
+        ads.setCount(all.size());
+        ads.setResults(all.stream().map(adsMapper::toDto).collect(Collectors.toList()));
+        return ads;
+
     }
 
     @Override

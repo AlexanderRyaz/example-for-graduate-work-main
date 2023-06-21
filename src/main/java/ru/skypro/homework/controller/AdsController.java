@@ -64,25 +64,34 @@ public class AdsController {
 
     @PatchMapping("{id}")
     public ResponseEntity<Ads> updateAds(@PathVariable Integer id, @RequestBody CreateAds createAds) {
-        Ads ads = adsService.updateAds(id, createAds);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Ads ads = adsService.updateAds(id, createAds, email);
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
     @DeleteMapping("{adId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteComments(@PathVariable Integer adId, @PathVariable Integer commentId) {
-        adsService.deleteComments(adId, commentId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        adsService.deleteComments(adId, commentId, email);
     }
 
     @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId, @PathVariable Integer commentId, @RequestBody Comment comment) {
-        Comment updateComments = adsService.updateComments(adId, commentId, comment);
+    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId, @PathVariable Integer commentId,
+                                                  @RequestBody Comment comment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Comment updateComments = adsService.updateComments(adId, commentId, comment, email);
         return new ResponseEntity<>(updateComments, HttpStatus.OK);
     }
 
     @GetMapping("me")
     public ResponseEntity<ResponseWrapperAds> getAdsMe() {
-        ResponseWrapperAds ads = adsService.getAdsMe();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        ResponseWrapperAds ads = adsService.getAdsMe(email);
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
