@@ -19,9 +19,11 @@ public interface AdsRepository extends JpaRepository<AdsEntity, Integer> {
 
     List<AdsEntity> findAllByTitleContainsOrDescriptionContainsOrderByCreatedAtDesc(String title, String description);
 
-    void deleteByPkAndAuthor_Email(Integer pk, String email);
+    void deleteByPk(Integer pk);
 
     Optional<AdsEntity> findByPkAndAuthor_Email(Integer pk, String email);
+
+    Optional<AdsEntity> findByPk(Integer pk);
 
     List<AdsEntity> findAllByAuthor_Email(String email);
 }

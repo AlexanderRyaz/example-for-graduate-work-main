@@ -31,67 +31,51 @@ public class AdsController {
     }
 
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        ResponseWrapperComment comments = adsService.getComments(id, email);
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id, Authentication authentication) {
+        ResponseWrapperComment comments = adsService.getComments(id, authentication.getName());
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @PostMapping("{id}/comments")
-    public ResponseEntity<Comment> addComments(@PathVariable Integer id, @RequestBody Comment comment) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Comment cmt = adsService.addComments(id, comment, email);
+    public ResponseEntity<Comment> addComments(@PathVariable Integer id, @RequestBody Comment comment, Authentication authentication) {
+        Comment cmt = adsService.addComments(id, comment, authentication.getName());
         return new ResponseEntity<>(cmt, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        FullAds fullAd = adsService.getFullAd(id, email);
+    public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id, Authentication authentication) {
+        FullAds fullAd = adsService.getFullAd(id, authentication.getName());
         return new ResponseEntity<>(fullAd, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeAds(@PathVariable Integer id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        adsService.removeAds(id, email);
+    public void removeAds(@PathVariable Integer id, Authentication authentication) {
+        adsService.removeAds(id, authentication.getName());
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Ads> updateAds(@PathVariable Integer id, @RequestBody CreateAds createAds) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Ads ads = adsService.updateAds(id, createAds, email);
+    public ResponseEntity<Ads> updateAds(@PathVariable Integer id, @RequestBody CreateAds createAds, Authentication authentication) {
+        Ads ads = adsService.updateAds(id, createAds, authentication.getName());
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
     @DeleteMapping("{adId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteComments(@PathVariable Integer adId, @PathVariable Integer commentId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        adsService.deleteComments(adId, commentId, email);
+    public void deleteComments(@PathVariable Integer adId, @PathVariable Integer commentId, Authentication authentication) {
+        adsService.deleteComments(adId, commentId, authentication.getName());
     }
 
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComments(@PathVariable Integer adId, @PathVariable Integer commentId,
-                                                  @RequestBody Comment comment) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Comment updateComments = adsService.updateComments(adId, commentId, comment, email);
+                                                  @RequestBody Comment comment, Authentication authentication) {
+        Comment updateComments = adsService.updateComments(adId, commentId, comment, authentication.getName());
         return new ResponseEntity<>(updateComments, HttpStatus.OK);
     }
 
     @GetMapping("me")
-    public ResponseEntity<ResponseWrapperAds> getAdsMe() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        ResponseWrapperAds ads = adsService.getAdsMe(email);
+    public ResponseEntity<ResponseWrapperAds> getAdsMe(Authentication authentication) {
+        ResponseWrapperAds ads = adsService.getAdsMe(authentication.getName());
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 

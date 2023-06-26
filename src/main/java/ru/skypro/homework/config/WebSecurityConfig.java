@@ -2,6 +2,7 @@ package ru.skypro.homework.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,47 +16,46 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class WebSecurityConfig {
 
-  private static final String[] AUTH_WHITELIST = {
-    "/swagger-resources/**",
-    "/swagger-ui.html",
-    "/v3/api-docs",
-    "/webjars/**",
-    "/login",
-    "/register"
-  };
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/login",
+            "/register"
+    };
 
-  @Bean
-  public InMemoryUserDetailsManager userDetailsService() {
-    UserDetails user =
-        User.builder()
-            .username("user@gmail.com")
-            .password("password")
-            .passwordEncoder((plainText) -> passwordEncoder().encode(plainText))
-            .roles("USER")
-            .build();
-    return new InMemoryUserDetailsManager(user);
-  }
+    @Bean
+    public InMemoryUserDetailsManager userDetailsService() {
+        UserDetails user =
+                User.builder()
+                        .username("user@gmail.com")
+                        .password("password")
+                        .passwordEncoder((plainText) -> passwordEncoder().encode(plainText))
+                        .roles("USER")
+                        .build();
+        return new InMemoryUserDetailsManager(user);
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf()
-        .disable()
-        .authorizeHttpRequests(
-            (authorization) ->
-                authorization
-                    .mvcMatchers("/ads")
-                    .permitAll()
-                    .mvcMatchers("/ads/**", "/users/**").hasRole("USER")
-                        .anyRequest().authenticated()
-        )
-        .cors()
-        .and()
-        .httpBasic(withDefaults());
-    return http.build();
-  }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf()
+                .disable()
+                .authorizeHttpRequests(
+                        (authorization) ->
+                                authorization
+                                        .mvcMatchers("/ads")
+                                        .permitAll()
+                                        .mvcMatchers(HttpMethod.GET, "/ads/**", "/users/**").authenticated()
+                )
+                .cors()
+                .and()
+                .httpBasic(withDefaults());
+        return http.build();
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

@@ -7,6 +7,7 @@ import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdsEntity;
 import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.NotAuthorizedException;
 import ru.skypro.homework.exception.NotFoundException;
 import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.mapper.CommentMapper;
@@ -45,8 +46,11 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public ResponseWrapperComment getComments(Integer adPk, String email) {
+        adsRepository.findByPkAndAuthor_Email(adPk, email)
+                .orElseThrow(() -> new NotAuthorizedException("Пользователь не авторизован"));
+
         ResponseWrapperComment comment = new ResponseWrapperComment();
-        List<CommentEntity> all = commentRepository.findAllByAds_PkAndAds_Author_Email(adPk, email);
+        List<CommentEntity> all = commentRepository.findAllByAds_Pk(adPk);
         comment.setCount(all.size());
         comment.setResults(all.stream().map(commentMapper::toDto).collect(Collectors.toList()));
         return comment;
@@ -56,7 +60,8 @@ public class AdsServiceImpl implements AdsService {
     public Comment addComments(Integer adPk, Comment comment, String email) {
         AdsEntity adsEntity = adsRepository.findById(adPk)
                 .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotAuthorizedException("Пользователь не найден"));
         CommentEntity commentEntity = commentMapper.toEntity(comment);
         commentEntity.setAds(adsEntity);
         commentEntity.setAuthor(user);
@@ -71,14 +76,19 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public void removeAds(Integer id, String email) {
-        adsRepository.deleteByPkAndAuthor_Email(id, email);
+        adsRepository.findByPkAndAuthor_Email(id, email)
+                .orElseThrow(() -> new NotAuthorizedException("Пользователь не авторизован"));
+        adsRepository.deleteByPk(id);
 
     }
 
     @Override
     public Ads updateAds(Integer id, CreateAds createAds, String email) {
-        AdsEntity entity = adsRepository.findByPkAndAuthor_Email(id, email)
+        AdsEntity entity = adsRepository.findByPk(id)
                 .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        if (!entity.getAuthor().getEmail().equals(email)) {
+            throw new NotAuthorizedException("Пользователь не имеет прав редактирования это обьявление");
+        }
         if (createAds.getDescription() != null && !createAds.getDescription().isBlank()) {
             entity.setDescription(createAds.getDescription());
         }
@@ -94,15 +104,21 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public void deleteComments(Integer adId, Integer commentId, String email) {
+        adsRepository.findByPk(adId).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        commentRepository.findByPkAndAds_PkAndAuthor_Email(commentId, adId, email)
+                .orElseThrow(() -> new NotAuthorizedException("Пользователь не авторизован"));
         commentRepository.deleteByPkAndAds_PkAndAuthor_Email(commentId, adId, email);
     }
 
     @Override
     public Comment updateComments(Integer adId, Integer commentId, Comment comment, String email) {
 
-        CommentEntity commentEntity = commentRepository.findByPkAndAds_PkAAndAuthor_Email(commentId, adId, email)
+        CommentEntity commentEntity = commentRepository.findByPkAndAds_Pk(commentId, adId)
                 .orElseThrow(() ->
                         new NotFoundException("Коментарий не найден"));
+        if (!commentEntity.getAuthor().getEmail().equals(email)){
+            throw new NotAuthorizedException("Пользователь не может обновить этот коментарий");
+        }
         if (comment.getText() != null && !comment.getText().isBlank()) {
             commentEntity.setText(comment.getText());
         }
