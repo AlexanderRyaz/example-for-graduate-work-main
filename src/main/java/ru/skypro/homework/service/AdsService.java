@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
+import java.io.IOException;
+
 @Service
 public interface AdsService {
     ResponseWrapperAds getAds(String search);
@@ -26,6 +28,6 @@ public interface AdsService {
 
     void updateAdsImage(MultipartFile image, Integer id);
 
-    Ads addAds(CreateAds properties, MultipartFile image);
+    Ads addAds(CreateAds properties, MultipartFile image) throws IOException;
 
 }

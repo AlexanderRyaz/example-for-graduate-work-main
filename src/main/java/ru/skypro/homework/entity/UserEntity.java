@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,5 +15,6 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String phone;
-    private String image;
+    @Lob
+    private byte[] image;
 }

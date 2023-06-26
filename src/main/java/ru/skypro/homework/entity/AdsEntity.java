@@ -16,7 +16,8 @@ public class AdsEntity {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private UserEntity author;
-    private String image;
+    @Lob
+    private byte [] image;
     private Integer price;
     private String title;
     private String description;

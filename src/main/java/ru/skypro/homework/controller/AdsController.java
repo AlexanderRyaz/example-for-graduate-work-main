@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdsService;
 
+import java.io.IOException;
+
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
@@ -22,8 +24,9 @@ public class AdsController {
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Ads> addAds(@RequestParam("properties") CreateAds properties, @RequestParam MultipartFile image) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = {MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<Ads> addAds(@RequestParam("properties") CreateAds properties,
+                                      @RequestParam MultipartFile image) throws IOException {
         Ads ads = adsService.addAds(properties, image);
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }

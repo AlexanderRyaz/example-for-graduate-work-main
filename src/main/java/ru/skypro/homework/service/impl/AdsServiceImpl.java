@@ -13,6 +13,7 @@ import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,9 +116,9 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ads addAds(CreateAds properties, MultipartFile image) {
+    public Ads addAds(CreateAds properties, MultipartFile image) throws IOException {
         AdsEntity entity = adsMapper.createAdsToEntity(properties);
-        entity.setImage(image.getOriginalFilename());
+        entity.setImage(image.getBytes());
         AdsEntity saveEntity = adsRepository.save(entity);
         return adsMapper.toDto(saveEntity);
     }
