@@ -44,9 +44,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         (authorization) ->
                                 authorization
-                                        .mvcMatchers("/ads")
+                                        .mvcMatchers(HttpMethod.GET,"/ads")
                                         .permitAll()
-                                        .mvcMatchers(HttpMethod.GET, "/ads/**", "/users/**").authenticated()
+                                        .mvcMatchers("/ads/**", "/users/**").authenticated()
                 )
                 .cors()
                 .and()

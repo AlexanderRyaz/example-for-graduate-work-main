@@ -6,9 +6,9 @@ import java.util.Date;
 
 @AllArgsConstructor
 public class ErrorResponse {
-    Date timestamp;
-    int status;
-    String error;
-    String path;
+    private Date timestamp;
+    private int status;
+    private String error;
+    private String path;
 }
 

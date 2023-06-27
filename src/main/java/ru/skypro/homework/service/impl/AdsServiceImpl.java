@@ -47,7 +47,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseWrapperComment getComments(Integer adPk, String email) {
         adsRepository.findByPkAndAuthor_Email(adPk, email)
-                .orElseThrow(() -> new NotAuthorizedException("Пользователь не авторизован"));
+                .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
 
         ResponseWrapperComment comment = new ResponseWrapperComment();
         List<CommentEntity> all = commentRepository.findAllByAds_Pk(adPk);
@@ -77,7 +77,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public void removeAds(Integer id, String email) {
         adsRepository.findByPkAndAuthor_Email(id, email)
-                .orElseThrow(() -> new NotAuthorizedException("Пользователь не авторизован"));
+                .orElseThrow(() -> new NotAuthorizedException("Пользователь не имеет права удалять это обьявление"));
         adsRepository.deleteByPk(id);
 
     }
@@ -106,7 +106,7 @@ public class AdsServiceImpl implements AdsService {
     public void deleteComments(Integer adId, Integer commentId, String email) {
         adsRepository.findByPk(adId).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
         commentRepository.findByPkAndAds_PkAndAuthor_Email(commentId, adId, email)
-                .orElseThrow(() -> new NotAuthorizedException("Пользователь не авторизован"));
+                .orElseThrow(() -> new NotAuthorizedException("Пользователь не имеет права удалять это обьявление"));
         commentRepository.deleteByPkAndAds_PkAndAuthor_Email(commentId, adId, email);
     }
 
