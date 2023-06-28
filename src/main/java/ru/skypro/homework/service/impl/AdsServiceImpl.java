@@ -76,8 +76,10 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public void removeAds(Integer id, String email) {
-        adsRepository.findByPkAndAuthor_Email(id, email)
-                .orElseThrow(() -> new NotAuthorizedException("Пользователь не имеет права удалять это обьявление"));
+        AdsEntity entity = adsRepository.findByPk(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        if (!entity.getAuthor().getEmail().equals(email)) {
+            throw new NotAuthorizedException("Пользователь не имеет права удалять это обьявление");
+        }
         adsRepository.deleteByPk(id);
 
     }
@@ -105,8 +107,11 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public void deleteComments(Integer adId, Integer commentId, String email) {
         adsRepository.findByPk(adId).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
-        commentRepository.findByPkAndAds_PkAndAuthor_Email(commentId, adId, email)
-                .orElseThrow(() -> new NotAuthorizedException("Пользователь не имеет права удалять это обьявление"));
+        CommentEntity entity = commentRepository.findByPkAndAds_Pk(commentId, adId)
+                .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
+        if (!entity.getAuthor().getEmail().equals(email)) {
+            throw new NotAuthorizedException("Пользователь не имеет права удалять этот комментарий");
+        }
         commentRepository.deleteByPkAndAds_PkAndAuthor_Email(commentId, adId, email);
     }
 
@@ -116,7 +121,7 @@ public class AdsServiceImpl implements AdsService {
         CommentEntity commentEntity = commentRepository.findByPkAndAds_Pk(commentId, adId)
                 .orElseThrow(() ->
                         new NotFoundException("Коментарий не найден"));
-        if (!commentEntity.getAuthor().getEmail().equals(email)){
+        if (!commentEntity.getAuthor().getEmail().equals(email)) {
             throw new NotAuthorizedException("Пользователь не может обновить этот коментарий");
         }
         if (comment.getText() != null && !comment.getText().isBlank()) {

@@ -16,10 +16,10 @@ public class ControllerExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotAuthorizedException(NotAuthorizedException e) {
         ErrorResponse errorResponse = new ErrorResponse(
                 new Date(),
-                HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
                 e.getMessage()
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }
