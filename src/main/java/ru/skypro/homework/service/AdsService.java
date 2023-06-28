@@ -10,21 +10,21 @@ import java.io.IOException;
 public interface AdsService {
     ResponseWrapperAds getAds(String search);
 
-    ResponseWrapperComment getComments(Integer adPk);
+    ResponseWrapperComment getComments(Integer adPk, String email);
 
-    Comment addComments(Integer adPk, Comment comment);
+    Comment addComments(Integer adPk, Comment comment, String email);
 
-    FullAds getFullAd(Integer id);
+    FullAds getFullAd(Integer id, String email);
 
-    void removeAds(Integer id);
+    void removeAds(Integer id, String email);
 
-    Ads updateAds(Integer id, CreateAds createAds);
+    Ads updateAds(Integer id, CreateAds createAds, String email);
 
-    void deleteComments(Integer adId, Integer commentId);
+    void deleteComments(Integer adId, Integer commentId, String email);
 
-    Comment updateComments(Integer adId, Integer commentId, Comment comment);
+    Comment updateComments(Integer adId, Integer commentId, Comment comment, String email);
 
-    ResponseWrapperAds getAdsMe();
+    ResponseWrapperAds getAdsMe(String email);
 
     void updateAdsImage(MultipartFile image, Integer id);
 
