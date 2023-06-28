@@ -13,4 +13,6 @@ public interface UserService {
     User getUser(String name);
     User updateUser(User user, String name);
     void updateUserImage(MultipartFile image, String name) throws IOException;
+
+    byte[] getUserImage(Integer id);
 }

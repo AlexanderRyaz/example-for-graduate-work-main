@@ -156,4 +156,9 @@ public class AdsServiceImpl implements AdsService {
         return adsMapper.toDto(saveEntity);
     }
 
+    @Override
+    public byte[] getAdsImage(Integer id) {
+        return adsRepository.findById(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено")).getImage();
+    }
+
 }

@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
         user.setImage(image.getBytes());
         userRepository.save(user);
     }
+
+    @Override
+    public byte[] getUserImage(Integer id) {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден")).getImage();
+    }
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Ads {
     private Integer author;
-    private byte[] image;
+    private String image;
     private Integer pk;
     private Integer price;
     private String title;
