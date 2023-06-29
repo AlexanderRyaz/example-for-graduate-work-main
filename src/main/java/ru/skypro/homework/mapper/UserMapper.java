@@ -14,6 +14,6 @@ public interface UserMapper {
     UserEntity toEntity(User dto);
     @Named("addUserImage")
     static String addImage(Integer id) {
-        return "users/image/" + id;
+        return "/users/image/" + id;
     }
 }

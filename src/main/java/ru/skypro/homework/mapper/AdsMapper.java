@@ -21,6 +21,6 @@ public interface AdsMapper {
 
     @Named("addAdsImage")
     static String addImage(Integer id) {
-        return "ads/image/" + id;
+        return "/ads/image/" + id;
     }
 }
