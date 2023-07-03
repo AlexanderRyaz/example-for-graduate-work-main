@@ -6,11 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdsEntity;
 import ru.skypro.homework.entity.CommentEntity;
+import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.ActionNotAllowedException;
 import ru.skypro.homework.exception.NotFoundException;
 import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
+import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
 
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdsServiceImpl implements AdsService {
     private final AdsRepository adsRepository;
+    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final AdsMapper adsMapper;
     private final CommentMapper commentMapper;
@@ -41,7 +45,10 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public ResponseWrapperComment getComments(Integer adPk) {
+    public ResponseWrapperComment getComments(Integer adPk, String email) {
+        adsRepository.findByPkAndAuthor_Email(adPk, email)
+                .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+
         ResponseWrapperComment comment = new ResponseWrapperComment();
         List<CommentEntity> all = commentRepository.findAllByAds_Pk(adPk);
         comment.setCount(all.size());
@@ -50,29 +57,40 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Comment addComments(Integer adPk, Comment comment) {
+    public Comment addComments(Integer adPk, Comment comment, String email) {
         AdsEntity adsEntity = adsRepository.findById(adPk)
                 .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ActionNotAllowedException("Пользователь не найден"));
         CommentEntity commentEntity = commentMapper.toEntity(comment);
         commentEntity.setAds(adsEntity);
+        commentEntity.setAuthor(user);
         CommentEntity saveComment = commentRepository.save(commentEntity);
         return commentMapper.toDto(saveComment);
     }
 
     @Override
-    public FullAds getFullAd(Integer id) {
-        return adsRepository.findFullAdsById(id);
+    public FullAds getFullAd(Integer id, String email) {
+        return adsRepository.findFullAdsByIdAndEmail(id, email);
     }
 
     @Override
-    public void removeAds(Integer id) {
-        adsRepository.deleteById(id);
+    public void removeAds(Integer id, String email) {
+        AdsEntity entity = adsRepository.findByPk(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        if (!entity.getAuthor().getEmail().equals(email)) {
+            throw new ActionNotAllowedException("Пользователь не имеет права удалять это обьявление");
+        }
+        adsRepository.deleteByPk(id);
 
     }
 
     @Override
-    public Ads updateAds(Integer id, CreateAds createAds) {
-        AdsEntity entity = adsRepository.findById(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+    public Ads updateAds(Integer id, CreateAds createAds, String email) {
+        AdsEntity entity = adsRepository.findByPk(id)
+                .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        if (!entity.getAuthor().getEmail().equals(email)) {
+            throw new ActionNotAllowedException("Пользователь не имеет прав редактирования это обьявление");
+        }
         if (createAds.getDescription() != null && !createAds.getDescription().isBlank()) {
             entity.setDescription(createAds.getDescription());
         }
@@ -87,15 +105,25 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public void deleteComments(Integer adId, Integer commentId) {
-        commentRepository.deleteByPkAndAds_Pk(commentId, adId);
+    public void deleteComments(Integer adId, Integer commentId, String email) {
+        adsRepository.findByPk(adId).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
+        CommentEntity entity = commentRepository.findByPkAndAds_Pk(commentId, adId)
+                .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
+        if (!entity.getAuthor().getEmail().equals(email)) {
+            throw new ActionNotAllowedException("Пользователь не имеет права удалять этот комментарий");
+        }
+        commentRepository.deleteByPkAndAds_PkAndAuthor_Email(commentId, adId, email);
     }
 
     @Override
-    public Comment updateComments(Integer adId, Integer commentId, Comment comment) {
+    public Comment updateComments(Integer adId, Integer commentId, Comment comment, String email) {
 
-        CommentEntity commentEntity = commentRepository.findByPkAndAds_Pk(commentId, adId).orElseThrow(() ->
-                new NotFoundException("Коментарий не найден"));
+        CommentEntity commentEntity = commentRepository.findByPkAndAds_Pk(commentId, adId)
+                .orElseThrow(() ->
+                        new NotFoundException("Коментарий не найден"));
+        if (!commentEntity.getAuthor().getEmail().equals(email)) {
+            throw new ActionNotAllowedException("Пользователь не может обновить этот коментарий");
+        }
         if (comment.getText() != null && !comment.getText().isBlank()) {
             commentEntity.setText(comment.getText());
         }
@@ -105,8 +133,13 @@ public class AdsServiceImpl implements AdsService {
 
 
     @Override
-    public ResponseWrapperAds getAdsMe() {
-        return null;
+    public ResponseWrapperAds getAdsMe(String email) {
+        ResponseWrapperAds ads = new ResponseWrapperAds();
+        List<AdsEntity> all = adsRepository.findAllByAuthor_Email(email);
+        ads.setCount(all.size());
+        ads.setResults(all.stream().map(adsMapper::toDto).collect(Collectors.toList()));
+        return ads;
+
     }
 
     @Override

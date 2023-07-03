@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -29,50 +31,51 @@ public class AdsController {
     }
 
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
-        ResponseWrapperComment comments = adsService.getComments(id);
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id, Authentication authentication) {
+        ResponseWrapperComment comments = adsService.getComments(id, authentication.getName());
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @PostMapping("{id}/comments")
-    public ResponseEntity<Comment> addComments(@PathVariable Integer id, @RequestBody Comment comment) {
-        Comment cmt = adsService.addComments(id, comment);
+    public ResponseEntity<Comment> addComments(@PathVariable Integer id, @RequestBody Comment comment, Authentication authentication) {
+        Comment cmt = adsService.addComments(id, comment, authentication.getName());
         return new ResponseEntity<>(cmt, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id) {
-        FullAds fullAd = adsService.getFullAd(id);
+    public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id, Authentication authentication) {
+        FullAds fullAd = adsService.getFullAd(id, authentication.getName());
         return new ResponseEntity<>(fullAd, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeAds(@PathVariable Integer id) {
-        adsService.removeAds(id);
+    public void removeAds(@PathVariable Integer id, Authentication authentication) {
+        adsService.removeAds(id, authentication.getName());
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Ads> updateAds(@PathVariable Integer id, @RequestBody CreateAds createAds) {
-        Ads ads = adsService.updateAds(id, createAds);
+    public ResponseEntity<Ads> updateAds(@PathVariable Integer id, @RequestBody CreateAds createAds, Authentication authentication) {
+        Ads ads = adsService.updateAds(id, createAds, authentication.getName());
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
     @DeleteMapping("{adId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteComments(@PathVariable Integer adId, @PathVariable Integer commentId) {
-        adsService.deleteComments(adId, commentId);
+    public void deleteComments(@PathVariable Integer adId, @PathVariable Integer commentId, Authentication authentication) {
+        adsService.deleteComments(adId, commentId, authentication.getName());
     }
 
     @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId, @PathVariable Integer commentId, @RequestBody Comment comment) {
-        Comment updateComments = adsService.updateComments(adId, commentId, comment);
+    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId, @PathVariable Integer commentId,
+                                                  @RequestBody Comment comment, Authentication authentication) {
+        Comment updateComments = adsService.updateComments(adId, commentId, comment, authentication.getName());
         return new ResponseEntity<>(updateComments, HttpStatus.OK);
     }
 
     @GetMapping("me")
-    public ResponseEntity<ResponseWrapperAds> getAdsMe() {
-        ResponseWrapperAds ads = adsService.getAdsMe();
+    public ResponseEntity<ResponseWrapperAds> getAdsMe(Authentication authentication) {
+        ResponseWrapperAds ads = adsService.getAdsMe(authentication.getName());
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
