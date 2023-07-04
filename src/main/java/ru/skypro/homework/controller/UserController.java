@@ -26,13 +26,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(name = "/me", produces = {MediaType.IMAGE_PNG_VALUE})
+    @GetMapping("me")
     public ResponseEntity<User> getUser(Authentication authentication) {
         User user = userService.getUser(authentication.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PatchMapping(name = "/me", produces = {MediaType.IMAGE_PNG_VALUE})
+    @PatchMapping("me")
     public ResponseEntity<User> updateUser(@RequestBody User user, Authentication authentication) {
         User updateUser = userService.updateUser(user, authentication.getName());
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
@@ -45,7 +45,7 @@ public class UserController {
         userService.updateUserImage(image, authentication.getName());
         return ResponseEntity.ok().build();
     }
-    @GetMapping(value = "/images/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
     public byte[] getImage(@PathVariable Integer id) {
         return userService.getUserImage(id);
     }

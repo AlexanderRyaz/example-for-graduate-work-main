@@ -1,6 +1,7 @@
 package ru.skypro.homework.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -15,6 +16,6 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String phone;
-    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] image;
 }

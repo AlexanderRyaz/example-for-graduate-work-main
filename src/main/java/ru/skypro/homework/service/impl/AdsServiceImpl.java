@@ -149,9 +149,11 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ads addAds(CreateAds properties, MultipartFile image) throws IOException {
+    public Ads addAds(CreateAds properties, MultipartFile image, String name) throws IOException {
         AdsEntity entity = adsMapper.createAdsToEntity(properties);
         entity.setImage(image.getBytes());
+        UserEntity author = userRepository.findByEmail(name).orElseThrow(() -> new NotFoundException("User not found"));
+        entity.setAuthor(author);
         AdsEntity saveEntity = adsRepository.save(entity);
         return adsMapper.toDto(saveEntity);
     }

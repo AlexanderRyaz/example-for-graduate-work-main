@@ -28,7 +28,7 @@ public interface AdsService {
 
     void updateAdsImage(MultipartFile image, Integer id);
 
-    Ads addAds(CreateAds properties, MultipartFile image) throws IOException;
+    Ads addAds(CreateAds properties, MultipartFile image, String name) throws IOException;
 
     byte[] getAdsImage(Integer id);
 }
