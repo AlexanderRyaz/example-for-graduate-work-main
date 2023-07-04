@@ -7,7 +7,7 @@ import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdsEntity;
 import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.entity.UserEntity;
-import ru.skypro.homework.exception.NotAuthorizedException;
+import ru.skypro.homework.exception.ActionNotAllowedException;
 import ru.skypro.homework.exception.NotFoundException;
 import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.mapper.CommentMapper;
@@ -62,7 +62,7 @@ public class AdsServiceImpl implements AdsService {
         AdsEntity adsEntity = adsRepository.findById(adPk)
                 .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
         UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotAuthorizedException("Пользователь не найден"));
+                .orElseThrow(() -> new ActionNotAllowedException("Пользователь не найден"));
         CommentEntity commentEntity = commentMapper.toEntity(comment);
         commentEntity.setAds(adsEntity);
         commentEntity.setAuthor(user);
@@ -79,7 +79,7 @@ public class AdsServiceImpl implements AdsService {
     public void removeAds(Integer id, String email) {
         AdsEntity entity = adsRepository.findByPk(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
         if (!entity.getAuthor().getEmail().equals(email)) {
-            throw new NotAuthorizedException("Пользователь не имеет права удалять это обьявление");
+            throw new ActionNotAllowedException("Пользователь не имеет права удалять это обьявление");
         }
         adsRepository.deleteByPk(id);
 
@@ -90,7 +90,7 @@ public class AdsServiceImpl implements AdsService {
         AdsEntity entity = adsRepository.findByPk(id)
                 .orElseThrow(() -> new NotFoundException("Обьявление не найдено"));
         if (!entity.getAuthor().getEmail().equals(email)) {
-            throw new NotAuthorizedException("Пользователь не имеет прав редактирования это обьявление");
+            throw new ActionNotAllowedException("Пользователь не имеет прав редактирования это обьявление");
         }
         if (createAds.getDescription() != null && !createAds.getDescription().isBlank()) {
             entity.setDescription(createAds.getDescription());
@@ -111,7 +111,7 @@ public class AdsServiceImpl implements AdsService {
         CommentEntity entity = commentRepository.findByPkAndAds_Pk(commentId, adId)
                 .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
         if (!entity.getAuthor().getEmail().equals(email)) {
-            throw new NotAuthorizedException("Пользователь не имеет права удалять этот комментарий");
+            throw new ActionNotAllowedException("Пользователь не имеет права удалять этот комментарий");
         }
         commentRepository.deleteByPkAndAds_PkAndAuthor_Email(commentId, adId, email);
     }
@@ -123,7 +123,7 @@ public class AdsServiceImpl implements AdsService {
                 .orElseThrow(() ->
                         new NotFoundException("Коментарий не найден"));
         if (!commentEntity.getAuthor().getEmail().equals(email)) {
-            throw new NotAuthorizedException("Пользователь не может обновить этот коментарий");
+            throw new ActionNotAllowedException("Пользователь не может обновить этот коментарий");
         }
         if (comment.getText() != null && !comment.getText().isBlank()) {
             commentEntity.setText(comment.getText());
