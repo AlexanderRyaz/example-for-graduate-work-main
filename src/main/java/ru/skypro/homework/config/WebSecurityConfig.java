@@ -44,7 +44,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         (authorization) ->
                                 authorization
-                                        .mvcMatchers(HttpMethod.GET,"/ads")
+                                        .mvcMatchers(HttpMethod.GET, "/ads", "/ads/image/**", "/users/image/**")
                                         .permitAll()
                                         .mvcMatchers("/ads/**", "/users/**").authenticated()
                 )

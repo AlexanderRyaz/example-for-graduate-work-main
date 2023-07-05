@@ -72,7 +72,9 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public FullAds getFullAd(Integer id, String email) {
-        return adsRepository.findFullAdsByIdAndEmail(id, email);
+        FullAds fullAds = adsRepository.findFullAdsByIdAndEmail(id, email);
+        fullAds.setImage("/ads/image/" + id);
+        return fullAds;
     }
 
     @Override

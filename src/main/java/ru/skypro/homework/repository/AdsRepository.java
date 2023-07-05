@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface AdsRepository extends JpaRepository<AdsEntity, Integer> {
     @Query("select new ru.skypro.homework.dto.FullAds(a.author.firstName," +
             "a.author.lastName,a.description,a.author.email," +
-            "a.author.phone,a.pk,a.price,a.title ) from AdsEntity as a join a.author where a.pk = : adsId and a.author.email = : email")
+            "a.author.phone,a.pk,a.price,a.title ) from AdsEntity as a join a.author where a.pk = :adsId and a.author.email = :email")
     FullAds findFullAdsByIdAndEmail(@Param("adsId") Integer adsId, @Param("email") String email);
 
     List<AdsEntity> findAllByTitleContainsOrDescriptionContainsOrderByCreatedAtDesc(String title, String description);
