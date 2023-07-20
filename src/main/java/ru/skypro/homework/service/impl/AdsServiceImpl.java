@@ -16,6 +16,7 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,9 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public FullAds getFullAd(Integer id, String email) {
-        return adsRepository.findFullAdsByIdAndEmail(id, email);
+        FullAds fullAds = adsRepository.findFullAdsByIdAndEmail(id, email);
+        fullAds.setImage("/ads/image/" + id);
+        return fullAds;
     }
 
     @Override
@@ -148,11 +151,18 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ads addAds(CreateAds properties, MultipartFile image) {
+    public Ads addAds(CreateAds properties, MultipartFile image, String name) throws IOException {
         AdsEntity entity = adsMapper.createAdsToEntity(properties);
-        entity.setImage(image.getOriginalFilename());
+        entity.setImage(image.getBytes());
+        UserEntity author = userRepository.findByEmail(name).orElseThrow(() -> new NotFoundException("User not found"));
+        entity.setAuthor(author);
         AdsEntity saveEntity = adsRepository.save(entity);
         return adsMapper.toDto(saveEntity);
+    }
+
+    @Override
+    public byte[] getAdsImage(Integer id) {
+        return adsRepository.findById(id).orElseThrow(() -> new NotFoundException("Обьявление не найдено")).getImage();
     }
 
 }

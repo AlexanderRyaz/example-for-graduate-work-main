@@ -1,12 +1,13 @@
 package ru.skypro.homework.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,5 +16,6 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String phone;
-    private String image;
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] image;
 }

@@ -5,11 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdsService;
+
+import java.io.IOException;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
@@ -25,8 +26,10 @@ public class AdsController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Ads> addAds(@RequestParam("properties") CreateAds properties, @RequestParam MultipartFile image) {
-        Ads ads = adsService.addAds(properties, image);
+    public ResponseEntity<Ads> addAds(@RequestPart("properties") CreateAds createAds,
+                                      @RequestParam("image") MultipartFile image,  Authentication authentication)
+            throws IOException {
+        Ads ads = adsService.addAds(createAds, image, authentication.getName());
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
@@ -83,5 +86,9 @@ public class AdsController {
     public ResponseEntity<String> updateAdsImage(@PathVariable Integer id, @RequestParam MultipartFile image) {
         adsService.updateAdsImage(image, id);
         return ResponseEntity.ok().build();
+    }
+    @GetMapping(value = "/images/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
+    public byte[] getImage(@PathVariable Integer id) {
+        return adsService.getAdsImage(id);
     }
 }
