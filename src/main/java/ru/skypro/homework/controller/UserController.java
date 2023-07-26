@@ -13,6 +13,9 @@ import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
 
+/**
+ * Контроллер для добавления, редактирования, изменения, удаления пользователя
+ */
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
